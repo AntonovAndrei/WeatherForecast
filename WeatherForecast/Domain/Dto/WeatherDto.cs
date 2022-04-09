@@ -5,7 +5,6 @@ namespace WeatherForecast.Domain.Dto
 {
     public class WeatherDto
     {
-        public int? Id { get; set; }
         [DataType(DataType.Time)]
         public DateTime Date { get; set; }
         [Range(-100, 100)]

@@ -5,7 +5,6 @@ namespace WeatherForecast.Domain.Entities
 {
     public class Weather
     {
-        public int Id { get; set; }
         [DataType(DataType.Time)]
         public DateTime Date { get; set; }
         public double Temperature { get; set; }
