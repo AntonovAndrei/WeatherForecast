@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Files import";
+}
+
+<h2>Импорт файла Excel</h2>
+<div>
+    @using (Html.BeginForm("Import", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+    {
+        <div>
+            <p>Загрузите Excel-файл:</p>
+            <input type="file" multiple="multiple" name="filesExcel" id="filesExcel" />
+            <div>
+                <input type="submit" value="Загрузить" />
+            </div>
+        </div>
+    }
+</div>

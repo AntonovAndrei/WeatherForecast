@@ -6,6 +6,7 @@ namespace WeatherForecast.Domain.Repositories.Abstract
 {
     public interface IWeatherRepository
     {
-        IEnumerable<WeatherDto> GetWeatherByWeek(DateTime Date);
+        IEnumerable<WeatherDto> GetWeatherByWeek(DateTime monthBeginning);
+        void AddWeather(IEnumerable<WeatherDto> weatherDtos);
     }
 }

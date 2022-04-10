@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
+using WeatherForecast.Domain.Entities;
 using WeatherForecast.Models;
 
 namespace WeatherForecast.Controllers
@@ -21,6 +24,43 @@ namespace WeatherForecast.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult Import()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Import(List<IFormFile> filesExcel)
+        {
+            if (ModelState.IsValid)
+            {
+                var weathers = new List<Weather>();
+                foreach(var excel in filesExcel)
+                {
+                    if (excel.Length > 0)
+                    {
+                        var filePath = Path.GetTempFileName();
+
+                        using (var stream = System.IO.File.Create(filePath))
+                        {
+                            await excel.CopyToAsync(stream);
+                            using (XLWorkbook workBook = new XLWorkbook(stream))
+                            {
+                                foreach (IXLWorksheet ws in workBook.Worksheets)
+                                {
+
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            return RedirectToAction("Index");
         }
 
         public IActionResult Privacy()
