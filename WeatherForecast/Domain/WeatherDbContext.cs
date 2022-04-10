@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WeatherForecast.Domain.Entities;
 
 namespace WeatherForecast.Domain
 {
@@ -8,6 +9,8 @@ namespace WeatherForecast.Domain
             : base(options)
         {
         }
+
+        public DbSet<Weather> Weathers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

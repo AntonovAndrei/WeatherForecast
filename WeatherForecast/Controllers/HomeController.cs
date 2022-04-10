@@ -7,7 +7,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using WeatherForecast.Domain.Entities;
+using WeatherForecast.Domain.Dto;
+using WeatherForecast.Domain.Repositories.Abstract;
 using WeatherForecast.Models;
 
 namespace WeatherForecast.Controllers
@@ -15,10 +16,12 @@ namespace WeatherForecast.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IWeatherRepository _weatherRepository;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IWeatherRepository weatherRepository)
         {
             _logger = logger;
+            _weatherRepository = weatherRepository;
         }
 
         public IActionResult Index()
@@ -37,8 +40,46 @@ namespace WeatherForecast.Controllers
         {
             if (ModelState.IsValid)
             {
-                var weathers = new List<Weather>();
-                foreach(var excel in filesExcel)
+                Console.WriteLine("Poshlo delo");
+                var weathers = new List<WeatherDto>
+                {
+                    new WeatherDto
+                    {
+                        Date = new DateTime(2008, 3, 1, 7, 0, 0),
+                        Temperature = -1.2,
+                        RelativeHumidity = 95.2,
+                        DewPoint = -1.1,
+                        AtmosphericPressure = 762,
+                        WindDirection = "Юг",
+                        WindSpeed = 1,
+                        CloudCover = 60,
+                        CloudLowerLimit = 2500,
+                        HorizontalVisibility = 10,
+                        WeatherPhenomena = "Дымка"
+                    },
+                    new WeatherDto
+                    {
+                        Date = new DateTime(2008, 6, 1, 7, 30, 0),
+                        Temperature = -4,
+                        RelativeHumidity = 91,
+                        DewPoint = -10,
+                        AtmosphericPressure = 762,
+                        WindDirection = "Ю",
+                        WindSpeed = 1,
+                        CloudCover = null,
+                        CloudLowerLimit = 2500,
+                        HorizontalVisibility = null,
+                        WeatherPhenomena = null
+                    }
+                };
+
+                await _weatherRepository.AddWeatherAsync(weathers);
+
+
+
+
+                /*var weathers = new List<WeatherDto>();
+                foreach (var excel in filesExcel)
                 {
                     if (excel.Length > 0)
                     {
@@ -56,8 +97,7 @@ namespace WeatherForecast.Controllers
                             }
                         }
                     }
-
-                }
+                }*/
             }
 
             return RedirectToAction("Index");

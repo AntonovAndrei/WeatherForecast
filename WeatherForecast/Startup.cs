@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WeatherForecast.Domain;
+using WeatherForecast.Domain.Repositories.Abstract;
+using WeatherForecast.Domain.Repositories.EntityFramework;
 
 namespace WeatherForecast
 {
@@ -29,6 +31,9 @@ namespace WeatherForecast
 
             services.AddDbContext<WeatherDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ConnectionString")));
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddScoped<IWeatherRepository, EFWeatherRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

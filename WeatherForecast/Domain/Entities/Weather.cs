@@ -1,14 +1,16 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace WeatherForecast.Domain.Entities
 {
     public class Weather
     {
+        [Key]
         [DataType(DataType.Time)]
         public DateTime Date { get; set; }
         public double Temperature { get; set; }
-        public int RelativeHumidity { get; set; }
+        public double RelativeHumidity { get; set; }
         public double DewPoint { get; set; }
         public int AtmosphericPressure { get; set; }
         public string? WindDirection { get; set; }
