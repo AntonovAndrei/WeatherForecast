@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Weathers";
+}
+
+<h2>Импорт файла Excel</h2>
+<div>
+    @using (Html.BeginForm("Weathers", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-weathers" }))
+    {
+    <div>
+        <p>Выберите начало месяца:</p>
+        <input type="date" id="startdate" name="startdate" value="2021-10-01" />
+        <input type="submit" value="Найти" class="btn btn-outline-dark" />
+        <div>
+            <input type="submit" value="Показать" class="btn btn-outline-dark" />
+        </div>
+    </div>
+    }
+</div>

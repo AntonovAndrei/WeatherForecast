@@ -7,7 +7,7 @@ namespace WeatherForecast.Domain.Repositories.Abstract
 {
     public interface IWeatherRepository
     {
-        public Task<IEnumerable<WeatherDto>> GetWeatherByWeekAsync(DateTime monthBeginning);
+        public Task<IEnumerable<WeatherDto>> GetWeatherByMonthWithPagingAsync(DateTime date, int page);
         public Task AddWeatherAsync(IEnumerable<WeatherDto> weatherDtos);
     }
 }

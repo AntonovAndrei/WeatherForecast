@@ -128,7 +128,6 @@ namespace WeatherForecast.Controllers
                                         _logger.LogError(ex.Message);
                                     }
                                     
-
                                     weathers.Clear();
                                 }
 
@@ -140,6 +139,12 @@ namespace WeatherForecast.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Weathers(int page = 1)
+        {
+            return View();
         }
 
         public IActionResult Privacy()

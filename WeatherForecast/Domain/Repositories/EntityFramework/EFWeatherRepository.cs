@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using WeatherForecast.Domain.Dto;
 using WeatherForecast.Domain.Entities;
@@ -25,9 +27,20 @@ namespace WeatherForecast.Domain.Repositories.EntityFramework
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<WeatherDto>> GetWeatherByWeekAsync(DateTime monthBeginning)
+        public async Task<IEnumerable<WeatherDto>> GetWeatherByMonthWithPagingAsync(DateTime date,  int page)
         {
-            throw new NotImplementedException();
+            int pageSize = 24;
+
+            DateTime monthBeginning = new DateTime(date.Year, date.Month, 1);
+            DateTime monthEnd = monthBeginning.AddMonths(1).AddDays(-1);
+
+            IEnumerable<Weather> weathers = await _context.Weathers
+                .Where(d => d.Date >= monthBeginning && d.Date <= monthEnd)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return _mapper.Map<IEnumerable<Weather>, IEnumerable<WeatherDto>>(weathers);
         }
     }
 }
