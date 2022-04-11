@@ -20,12 +20,12 @@ namespace WeatherForecast.Domain.Dto
         [Required]
         [Range(500, 1000)]
         public int AtmosphericPressure { get; set; }
-        public string? WindDirection { get; set; }
+        public string WindDirection { get; set; }
         public int? WindSpeed { get; set; }
         [Range(0, 100)]
         public int? CloudCover { get; set; }
         public int? CloudLowerLimit { get; set; }
         public int? HorizontalVisibility { get; set; }
-        public string? WeatherPhenomena { get; set; }
+        public string WeatherPhenomena { get; set; }
     }
 }

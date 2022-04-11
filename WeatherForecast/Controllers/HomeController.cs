@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using WeatherForecast.Domain.Dto;
 using WeatherForecast.Domain.Repositories.Abstract;
 using WeatherForecast.Models;
+using WeatherForecast.Services;
 
 namespace WeatherForecast.Controllers
 {
@@ -40,45 +41,7 @@ namespace WeatherForecast.Controllers
         {
             if (ModelState.IsValid)
             {
-                Console.WriteLine("Poshlo delo");
-                var weathers = new List<WeatherDto>
-                {
-                    new WeatherDto
-                    {
-                        Date = new DateTime(2008, 3, 1, 7, 0, 0),
-                        Temperature = -1.2,
-                        RelativeHumidity = 95.2,
-                        DewPoint = -1.1,
-                        AtmosphericPressure = 762,
-                        WindDirection = "Юг",
-                        WindSpeed = 1,
-                        CloudCover = 60,
-                        CloudLowerLimit = 2500,
-                        HorizontalVisibility = 10,
-                        WeatherPhenomena = "Дымка"
-                    },
-                    new WeatherDto
-                    {
-                        Date = new DateTime(2008, 6, 1, 7, 30, 0),
-                        Temperature = -4,
-                        RelativeHumidity = 91,
-                        DewPoint = -10,
-                        AtmosphericPressure = 762,
-                        WindDirection = "Ю",
-                        WindSpeed = 1,
-                        CloudCover = null,
-                        CloudLowerLimit = 2500,
-                        HorizontalVisibility = null,
-                        WeatherPhenomena = null
-                    }
-                };
-
-                await _weatherRepository.AddWeatherAsync(weathers);
-
-
-
-
-                /*var weathers = new List<WeatherDto>();
+                var weathers = new List<WeatherDto>();
                 foreach (var excel in filesExcel)
                 {
                     if (excel.Length > 0)
@@ -92,12 +55,63 @@ namespace WeatherForecast.Controllers
                             {
                                 foreach (IXLWorksheet ws in workBook.Worksheets)
                                 {
+                                    int row = 5;
 
+                                    while (true)
+                                    {
+                                        string date = ws.Cell($"A{row}").Value.ToString().Trim();
+                                        string time = ws.Cell($"B{row}").Value.ToString().Trim();
+                                        DateTime dateTime = ParseDateTime.Parse(date, time);
+                                        double temperature = Convert.ToDouble(ws.Cell($"C{row}").Value.ToString().Trim());
+                                        double relativeHumidity = Convert.ToDouble(ws.Cell($"D{row}").Value.ToString().Trim());
+                                        double dewPoint = Convert.ToDouble(ws.Cell($"E{row}").Value.ToString().Trim());
+                                        int atmosphericPressure = Convert.ToInt32(ws.Cell($"F{row}").Value.ToString().Trim());
+                                        string wind = ws.Cell($"G{row}").Value.ToString().Trim();
+                                        string windDirection = wind == "" ? null : wind;
+
+                                        string speed = ws.Cell($"H{row}").Value.ToString().Trim();
+                                        int? windSpeed = speed == "" ? null : Convert.ToInt32(speed);
+
+                                        string cover = ws.Cell($"I{row}").Value.ToString().Trim();
+                                        int? cloudCover = cover == "" ? null : Convert.ToInt32(cover);
+
+                                        string lowerLimit = ws.Cell($"J{row}").Value.ToString().Trim();
+                                        int? cloudLowerLimit = lowerLimit == "" ? null : Convert.ToInt32(lowerLimit);
+
+                                        string visibility = ws.Cell($"K{row}").Value.ToString().Trim();
+                                        int? horizontalVisibility = visibility == "" ? null : Convert.ToInt32(visibility);
+                                        
+                                        string phenomena = ws.Cell($"L{row}").Value.ToString().Trim();
+                                        string weatherPhenomena = phenomena == "" ? null : phenomena;
+
+                                        weathers.Add(new WeatherDto
+                                        {
+                                            Date = dateTime,
+                                            Temperature = temperature,
+                                            RelativeHumidity = relativeHumidity,
+                                            DewPoint = dewPoint,
+                                            AtmosphericPressure = atmosphericPressure,
+                                            WindDirection = windDirection,
+                                            WindSpeed = windSpeed,
+                                            CloudCover = cloudCover,
+                                            CloudLowerLimit = cloudLowerLimit,
+                                            HorizontalVisibility = horizontalVisibility,
+                                            WeatherPhenomena = weatherPhenomena
+                                        });
+
+                                        string nextDate = ws.Cell($"A{row + 1}").Value.ToString().Trim();
+                                        if(nextDate == "")
+                                        {
+                                            break;
+                                        }
+                                    }
+
+                                    await _weatherRepository.AddWeatherAsync(weathers);
                                 }
                             }
                         }
                     }
-                }*/
+                }
             }
 
             return RedirectToAction("Index");
