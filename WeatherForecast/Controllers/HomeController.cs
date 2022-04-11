@@ -59,55 +59,76 @@ namespace WeatherForecast.Controllers
 
                                     while (true)
                                     {
-                                        string date = ws.Cell($"A{row}").Value.ToString().Trim();
-                                        string time = ws.Cell($"B{row}").Value.ToString().Trim();
-                                        DateTime dateTime = ParseDateTime.Parse(date, time);
-                                        double temperature = Convert.ToDouble(ws.Cell($"C{row}").Value.ToString().Trim());
-                                        double relativeHumidity = Convert.ToDouble(ws.Cell($"D{row}").Value.ToString().Trim());
-                                        double dewPoint = Convert.ToDouble(ws.Cell($"E{row}").Value.ToString().Trim());
-                                        int atmosphericPressure = Convert.ToInt32(ws.Cell($"F{row}").Value.ToString().Trim());
-                                        string wind = ws.Cell($"G{row}").Value.ToString().Trim();
-                                        string windDirection = wind == "" ? null : wind;
+                                        try {
+                                            string date = ws.Cell($"A{row}").Value.ToString().Trim();
+                                            string time = ws.Cell($"B{row}").Value.ToString().Trim();
+                                            DateTime dateTime = ParseDateTime.Parse(date, time);
 
-                                        string speed = ws.Cell($"H{row}").Value.ToString().Trim();
-                                        int? windSpeed = speed == "" ? null : Convert.ToInt32(speed);
+                                            double temperature = Convert.ToDouble(ws.Cell($"C{row}").Value.ToString().Trim());
+                                            double relativeHumidity = Convert.ToDouble(ws.Cell($"D{row}").Value.ToString().Trim());
+                                            double dewPoint = Convert.ToDouble(ws.Cell($"E{row}").Value.ToString().Trim());
+                                            int atmosphericPressure = Convert.ToInt32(ws.Cell($"F{row}").Value.ToString().Trim());
 
-                                        string cover = ws.Cell($"I{row}").Value.ToString().Trim();
-                                        int? cloudCover = cover == "" ? null : Convert.ToInt32(cover);
+                                            string wind = ws.Cell($"G{row}").Value.ToString().Trim();
+                                            string windDirection = wind == "" ? null : wind;
 
-                                        string lowerLimit = ws.Cell($"J{row}").Value.ToString().Trim();
-                                        int? cloudLowerLimit = lowerLimit == "" ? null : Convert.ToInt32(lowerLimit);
+                                            string speed = ws.Cell($"H{row}").Value.ToString().Trim();
+                                            int? windSpeed = speed == "" ? null : Convert.ToInt32(speed);
 
-                                        string visibility = ws.Cell($"K{row}").Value.ToString().Trim();
-                                        int? horizontalVisibility = visibility == "" ? null : Convert.ToInt32(visibility);
-                                        
-                                        string phenomena = ws.Cell($"L{row}").Value.ToString().Trim();
-                                        string weatherPhenomena = phenomena == "" ? null : phenomena;
+                                            string cover = ws.Cell($"I{row}").Value.ToString().Trim();
+                                            int? cloudCover = cover == "" ? null : Convert.ToInt32(cover);
 
-                                        weathers.Add(new WeatherDto
+                                            string lowerLimit = ws.Cell($"J{row}").Value.ToString().Trim();
+                                            int? cloudLowerLimit = lowerLimit == "" ? null : Convert.ToInt32(lowerLimit);
+
+                                            string visibility = ws.Cell($"K{row}").Value.ToString().Trim();
+                                            int? horizontalVisibility = visibility == "" ? null : Convert.ToInt32(visibility);
+
+                                            string phenomena = ws.Cell($"L{row}").Value.ToString().Trim();
+                                            string weatherPhenomena = phenomena == "" ? null : phenomena;
+
+
+                                            weathers.Add(new WeatherDto
+                                            {
+                                                Date = dateTime,
+                                                Temperature = temperature,
+                                                RelativeHumidity = relativeHumidity,
+                                                DewPoint = dewPoint,
+                                                AtmosphericPressure = atmosphericPressure,
+                                                WindDirection = windDirection,
+                                                WindSpeed = windSpeed,
+                                                CloudCover = cloudCover,
+                                                CloudLowerLimit = cloudLowerLimit,
+                                                HorizontalVisibility = horizontalVisibility,
+                                                WeatherPhenomena = weatherPhenomena
+                                            });
+
+                                        }
+                                        catch (Exception ex)
                                         {
-                                            Date = dateTime,
-                                            Temperature = temperature,
-                                            RelativeHumidity = relativeHumidity,
-                                            DewPoint = dewPoint,
-                                            AtmosphericPressure = atmosphericPressure,
-                                            WindDirection = windDirection,
-                                            WindSpeed = windSpeed,
-                                            CloudCover = cloudCover,
-                                            CloudLowerLimit = cloudLowerLimit,
-                                            HorizontalVisibility = horizontalVisibility,
-                                            WeatherPhenomena = weatherPhenomena
-                                        });
+                                            _logger.LogError(ex.Message + "\n" +
+                                               "InnerException:" + ex.InnerException);
+                                        }
+                                        
+
+                                        
 
                                         string nextDate = ws.Cell($"A{row + 1}").Value.ToString().Trim();
+                                        Console.WriteLine($"A{row + 1}");
                                         if(nextDate == "")
                                         {
                                             break;
                                         }
+                                        else
+                                        {
+                                            row++;
+                                        }
                                     }
 
-                                    await _weatherRepository.AddWeatherAsync(weathers);
+                                    
                                 }
+
+                                await _weatherRepository.AddWeatherAsync(weathers);
                             }
                         }
                     }
