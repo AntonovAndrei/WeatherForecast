@@ -25,7 +25,7 @@ namespace WeatherForecast.Domain.Dto
         [Range(0, 100)]
         public int? CloudCover { get; set; }
         public int? CloudLowerLimit { get; set; }
-        public int? HorizontalVisibility { get; set; }
+        public string HorizontalVisibility { get; set; }
         public string WeatherPhenomena { get; set; }
     }
 }

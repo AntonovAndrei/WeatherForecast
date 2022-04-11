@@ -17,7 +17,7 @@ namespace WeatherForecast.Domain.Entities
         public int? WindSpeed { get; set; }
         public int? CloudCover { get; set; }
         public int? CloudLowerLimit { get; set; }
-        public int? HorizontalVisibility { get; set; }
+        public string? HorizontalVisibility { get; set; }
         public string? WeatherPhenomena { get; set; }
     }
 }

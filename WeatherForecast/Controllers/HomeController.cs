@@ -106,12 +106,9 @@ namespace WeatherForecast.Controllers
                                         }
                                         catch (Exception ex)
                                         {
-                                            _logger.LogError(ex.Message + "\n" +
+                                            _logger.LogError(ex.Message + "  " +
                                                "InnerException:" + ex.InnerException);
                                         }
-                                        
-
-                                        
 
                                         string nextDate = ws.Cell($"A{row + 1}").Value.ToString().Trim();
                                         Console.WriteLine($"A{row + 1}");
@@ -124,11 +121,19 @@ namespace WeatherForecast.Controllers
                                             row++;
                                         }
                                     }
-
+                                    try {
+                                        await _weatherRepository.AddWeatherAsync(weathers);
+                                    } 
+                                    catch (Exception ex) 
+                                    {
+                                        _logger.LogError(ex.Message);
+                                    }
                                     
+
+                                    weathers.Clear();
                                 }
 
-                                await _weatherRepository.AddWeatherAsync(weathers);
+                                
                             }
                         }
                     }
