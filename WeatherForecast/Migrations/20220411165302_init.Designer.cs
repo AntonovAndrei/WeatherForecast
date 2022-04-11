@@ -10,8 +10,8 @@ using WeatherForecast.Domain;
 namespace WeatherForecast.Migrations
 {
     [DbContext(typeof(WeatherDbContext))]
-    [Migration("20220410154131__initial")]
-    partial class _initial
+    [Migration("20220411165302_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,8 +38,8 @@ namespace WeatherForecast.Migrations
                     b.Property<double>("DewPoint")
                         .HasColumnType("float");
 
-                    b.Property<int?>("HorizontalVisibility")
-                        .HasColumnType("int");
+                    b.Property<string>("HorizontalVisibility")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("RelativeHumidity")
                         .HasColumnType("float");

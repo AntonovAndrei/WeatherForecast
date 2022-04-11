@@ -36,8 +36,8 @@ namespace WeatherForecast.Migrations
                     b.Property<double>("DewPoint")
                         .HasColumnType("float");
 
-                    b.Property<int?>("HorizontalVisibility")
-                        .HasColumnType("int");
+                    b.Property<string>("HorizontalVisibility")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("RelativeHumidity")
                         .HasColumnType("float");

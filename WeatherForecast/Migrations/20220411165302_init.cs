@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WeatherForecast.Migrations
 {
-    public partial class _initial : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,7 +20,7 @@ namespace WeatherForecast.Migrations
                     WindSpeed = table.Column<int>(type: "int", nullable: true),
                     CloudCover = table.Column<int>(type: "int", nullable: true),
                     CloudLowerLimit = table.Column<int>(type: "int", nullable: true),
-                    HorizontalVisibility = table.Column<int>(type: "int", nullable: true),
+                    HorizontalVisibility = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     WeatherPhenomena = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>

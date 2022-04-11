@@ -82,7 +82,7 @@ namespace WeatherForecast.Controllers
                                             int? cloudLowerLimit = lowerLimit == "" ? null : Convert.ToInt32(lowerLimit);
 
                                             string visibility = ws.Cell($"K{row}").Value.ToString().Trim();
-                                            int? horizontalVisibility = visibility == "" ? null : Convert.ToInt32(visibility);
+                                            string horizontalVisibility = visibility == "" ? null : visibility;
 
                                             string phenomena = ws.Cell($"L{row}").Value.ToString().Trim();
                                             string weatherPhenomena = phenomena == "" ? null : phenomena;
@@ -111,7 +111,6 @@ namespace WeatherForecast.Controllers
                                         }
 
                                         string nextDate = ws.Cell($"A{row + 1}").Value.ToString().Trim();
-                                        Console.WriteLine($"A{row + 1}");
                                         if(nextDate == "")
                                         {
                                             break;
