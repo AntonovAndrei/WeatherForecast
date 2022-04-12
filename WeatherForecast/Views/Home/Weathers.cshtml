@@ -1,4 +1,6 @@
-﻿@{
+﻿@using WeatherForecast.ViewModels
+@model IndexViewModel
+@{
     ViewData["Title"] = "Weathers";
 }
 
@@ -6,13 +8,64 @@
 <div>
     @using (Html.BeginForm("Weathers", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-weathers" }))
     {
-    <div>
-        <p>Выберите начало месяца:</p>
-        <input type="date" id="startdate" name="startdate" value="2021-10-01" />
-        <input type="submit" value="Найти" class="btn btn-outline-dark" />
         <div>
-            <input type="submit" value="Показать" class="btn btn-outline-dark" />
+            <p>Выберите начало месяца:</p>
+            <input type="date" id="startdate" name="startdate" value="2021-10-01" />
+            <input type="submit" value="Найти" class="btn btn-outline-dark" />
+            <div>
+                <input type="submit" value="Показать" class="btn btn-outline-dark" />
+            </div>
         </div>
-    </div>
+        <h1>Прогноз</h1>
+        <table class="table">
+            <tr>
+                <th>Дата</th>
+                <th>Время</th>
+                <th>Температура воздуха</th>
+                <th>Влажность воздуха</th>
+                <th>Точка росы</th>
+                <th>Атмосферное давление</th>
+                <th>Направление ветра</th>
+                <th>Скорость ветра</th>
+                <th>Облачность</th>
+                <th>Нижняя граница облачности</th>
+                <th>Горизонтальная видимость</th>
+                <th>Погодные явления</th>
+            </tr>
+            @foreach (WeatherViewModel w in Model.Weathers)
+            {
+                <tr>
+                    <td>@w.Date</td>
+                    <td>@w.Temperature</td>
+                    <td>@w.RelativeHumidity</td>
+                    <td>@w.DewPoint</td>
+                    <td>@w.AtmosphericPressure</td>
+                    <td>@w.WindDirection</td>
+                    <td>@w.WindSpeed</td>
+                    <td>@w.CloudCover</td>
+                    <td>@w.CloudLowerLimit</td>
+                    <td>@w.HorizontalVisibility</td>
+                    <td>@w.WeatherPhenomena</td>
+                </tr>
+            }
+        </table>
+        @if (Model.PageViewModel.HasPreviousPage)
+        {
+            <a asp-action="Weathers"
+               asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+               class="btn btn-outline-dark">
+                <i class="glyphicon glyphicon-chevron-left"></i>
+                Назад
+            </a>
+        }
+        @if (Model.PageViewModel.HasNextPage)
+        {
+            <a asp-action="Weathers"
+               asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+               class="btn btn-outline-dark">
+                Вперед
+                <i class="glyphicon glyphicon-chevron-right"></i>
+            </a>
+        }
     }
 </div>

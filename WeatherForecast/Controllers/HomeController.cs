@@ -141,6 +141,12 @@ namespace WeatherForecast.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Weathers()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> Weathers(int page = 1)
         {
