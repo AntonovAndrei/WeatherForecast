@@ -149,15 +149,21 @@ namespace WeatherForecast.Controllers
         }
 
 
-        public async Task<IActionResult> Weathers(DateTime startDate, int? pageNumber)
+        public async Task<IActionResult> Weathers(DateTime startDate/*, int? pageNumber*/)
         {
 
-            IQueryable<WeatherDto> weatherSource = await _weatherRepository.GetWeatherByMonthAsync(startDate);
+            /*IQueryable<WeatherDto> weatherSource = await _weatherRepository.GetWeatherByMonthAsync(startDate);
             var configuration = new MapperConfiguration(cfg => cfg.CreateProjection<WeatherDto, WeatherViewModel>());
             IQueryable<WeatherViewModel> weathers = weatherSource.ProjectTo<WeatherViewModel>(configuration);
 
             int pageSize = 24;
-            return View(await PaginatedList<WeatherViewModel>.CreateAsync(weathers.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<WeatherViewModel>.CreateAsync(weathers.AsNoTracking(), pageNumber ?? 1, pageSize));*/
+
+            IQueryable<WeatherDto> weatherSource = await _weatherRepository.GetWeatherByMonthAsync(startDate);
+            var configuration = new MapperConfiguration(cfg => cfg.CreateProjection<WeatherDto, WeatherViewModel>());
+            IList<WeatherViewModel> weathers = weatherSource.ProjectTo<WeatherViewModel>(configuration).ToList();
+
+            return View(weathers);
         }
 
         public IActionResult Privacy()
