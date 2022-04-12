@@ -1,16 +1,21 @@
-﻿using ClosedXML.Excel;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using WeatherForecast.Domain.Dto;
 using WeatherForecast.Domain.Repositories.Abstract;
 using WeatherForecast.Models;
 using WeatherForecast.Services;
+using WeatherForecast.ViewModels;
 
 namespace WeatherForecast.Controllers
 {
@@ -18,9 +23,11 @@ namespace WeatherForecast.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IWeatherRepository _weatherRepository;
+        private readonly IMapper _mapper;
 
-        public HomeController(ILogger<HomeController> logger, IWeatherRepository weatherRepository)
+        public HomeController(ILogger<HomeController> logger, IWeatherRepository weatherRepository, IMapper mapper)
         {
+            _mapper = mapper;
             _logger = logger;
             _weatherRepository = weatherRepository;
         }
@@ -141,16 +148,16 @@ namespace WeatherForecast.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Weathers()
-        {
-            return View();
-        }
 
-        [HttpPost]
-        public async Task<IActionResult> Weathers(int page = 1)
+        public async Task<IActionResult> Weathers(DateTime startDate, int? pageNumber)
         {
-            return View();
+
+            IQueryable<WeatherDto> weatherSource = await _weatherRepository.GetWeatherByMonthAsync(startDate);
+            var configuration = new MapperConfiguration(cfg => cfg.CreateProjection<WeatherDto, WeatherViewModel>());
+            IQueryable<WeatherViewModel> weathers = weatherSource.ProjectTo<WeatherViewModel>(configuration);
+
+            int pageSize = 24;
+            return View(await PaginatedList<WeatherViewModel>.CreateAsync(weathers.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         public IActionResult Privacy()

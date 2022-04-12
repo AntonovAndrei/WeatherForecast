@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -21,26 +22,26 @@ namespace WeatherForecast.Domain.Repositories.EntityFramework
             _mapper = mapper;
         }
 
-        public async Task AddWeatherAsync(IEnumerable<WeatherDto> weatherDtos)
+        public async Task AddWeatherAsync(IList<WeatherDto> weatherDtos)
         {
             await _context.AddRangeAsync(_mapper.Map<IEnumerable<WeatherDto>, IEnumerable<Weather>>(weatherDtos));
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<WeatherDto>> GetWeatherByMonthWithPagingAsync(DateTime date,  int page)
-        {
-            int pageSize = 24;
 
+        public async Task<IQueryable<WeatherDto>> GetWeatherByMonthAsync(DateTime date)
+        {
             DateTime monthBeginning = new DateTime(date.Year, date.Month, 1);
             DateTime monthEnd = monthBeginning.AddMonths(1).AddDays(-1);
 
-            IEnumerable<Weather> weathers = await _context.Weathers
+            var configuration = new MapperConfiguration(cfg => cfg.CreateProjection<Weather, WeatherDto>());
+            
+            IQueryable<WeatherDto> weathers = _context.Weathers
                 .Where(d => d.Date >= monthBeginning && d.Date <= monthEnd)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+                .OrderBy(d => d.Date)
+                .ProjectTo<WeatherDto>(configuration);
 
-            return _mapper.Map<IEnumerable<Weather>, IEnumerable<WeatherDto>>(weathers);
+            return weathers;
         }
     }
 }
