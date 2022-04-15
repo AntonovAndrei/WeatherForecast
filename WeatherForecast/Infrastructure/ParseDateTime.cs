@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WeatherForecast.Services
+namespace WeatherForecast.Infrastructure
 {
     public static class ParseDateTime
     {
