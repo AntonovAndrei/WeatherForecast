@@ -9,7 +9,7 @@ namespace WeatherForecast.Domain.Repositories.Abstract
 {
     public interface IWeatherRepository
     {
-        public Task<WeatherListViewModel> GetWeatherByMonthWithPagingAsync(DateTime date, int weatherPage);
+        public Task<WeatherListModel> GetWeatherByMonthWithPagingAsync(DateTime date, int weatherPage);
         public Task<IQueryable<WeatherDto>> GetWeatherByMonthAsync(DateTime date);
         public Task AddWeatherAsync(IList<WeatherDto> weatherDtos);
     }

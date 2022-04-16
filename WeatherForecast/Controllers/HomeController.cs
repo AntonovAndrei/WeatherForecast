@@ -152,7 +152,7 @@ namespace WeatherForecast.Controllers
         public async Task<IActionResult> Weathers(DateTime startDate, int pageNumber = 1)
         {
 
-            WeatherListViewModel weatherList = await _weatherRepository.GetWeatherByMonthWithPagingAsync(startDate, pageNumber);
+            WeatherListModel weatherList = await _weatherRepository.GetWeatherByMonthWithPagingAsync(startDate, pageNumber);
 
             return View(weatherList);
         }

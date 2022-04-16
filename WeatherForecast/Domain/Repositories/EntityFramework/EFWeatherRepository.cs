@@ -28,10 +28,10 @@ namespace WeatherForecast.Domain.Repositories.EntityFramework
             await _context.SaveChangesAsync();
         }
 
-        public async Task<WeatherListViewModel> GetWeatherByMonthWithPagingAsync(DateTime date, int weatherPage)
+        public async Task<WeatherListModel> GetWeatherByMonthWithPagingAsync(DateTime date, int weatherPage)
         {
             DateTime monthBeginning = new DateTime(date.Year, date.Month, 1);
-            DateTime monthEnd = monthBeginning.AddMonths(1).AddDays(-1);
+            DateTime monthEnd = monthBeginning.AddMonths(1).AddMinutes(-1);
 
             var configuration = new MapperConfiguration(cfg => cfg.CreateProjection<Weather, WeatherDto>());
 
@@ -47,7 +47,7 @@ namespace WeatherForecast.Domain.Repositories.EntityFramework
                 .Where(d => d.Date >= monthBeginning && d.Date <= monthEnd)
                 .Count();
 
-            WeatherListViewModel weathesrList = new WeatherListViewModel
+            WeatherListModel weathesrList = new WeatherListModel
             {
                 Weathers = _mapper.Map<IEnumerable<WeatherDto>, IEnumerable<WeatherViewModel>>(weathers),
                 PagingInfo = new PagingInfo
