@@ -6,11 +6,17 @@
 <div>
     @using (Html.BeginForm("Import", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
     {
-        <div>
-            <p>Загрузите Excel-файл(ы):</p>
-            <input type="file" multiple="multiple" name="filesExcel" id="filesExcel" />
-            <div>
-                <input type="submit" value="Загрузить" />
+        <p>Загрузите Excel-файл(ы):</p>
+
+        <div class="container">
+            <div class="row">
+                <input type="file" multiple="multiple" name="filesExcel" id="filesExcel " class="btn btn-outline-dark" />
+            </div>
+            <div class="row">
+                <p></p>
+            </div>
+            <div class="row">
+                <input type="submit" value="Загрузить" class="btn btn-outline-dark" />
             </div>
         </div>
     }
