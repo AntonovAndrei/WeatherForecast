@@ -13,7 +13,6 @@ namespace WeatherForecast.Domain.Repositories.EntityFramework
 {
     public class EFWeatherRepository : IWeatherRepository
     {
-        private readonly int _pageSize = 24;
         private readonly WeatherDbContext _context;
         private readonly IMapper _mapper;
 
@@ -36,11 +35,12 @@ namespace WeatherForecast.Domain.Repositories.EntityFramework
 
             var configuration = new MapperConfiguration(cfg => cfg.CreateProjection<Weather, WeatherDto>());
 
+
             IEnumerable<WeatherDto> weathers = _context.Weathers
                 .Where(d => d.Date >= monthBeginning && d.Date <= monthEnd)
                 .OrderBy(d => d.Date)
-                .Skip((weatherPage - 1) * _pageSize)
-                .Take(_pageSize)
+                .Skip((weatherPage - 1) * PagingInfo.PageSize)
+                .Take(PagingInfo.PageSize)
                 .ProjectTo<WeatherDto>(configuration);
 
             int itemsCount = _context.Weathers
@@ -53,7 +53,7 @@ namespace WeatherForecast.Domain.Repositories.EntityFramework
                 PagingInfo = new PagingInfo
                 {
                     CurrentPage = weatherPage,
-                    ItemsPerPage = _pageSize,
+                    ItemsPerPage = PagingInfo.PageSize,
                     TotalItems = itemsCount,
                     SearchDate = monthBeginning
                 }
