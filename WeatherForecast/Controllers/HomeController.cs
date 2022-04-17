@@ -91,11 +91,23 @@ namespace WeatherForecast.Controllers
             return RedirectToAction("Index");
         }
 
-
-        public async Task<IActionResult> Weathers(DateTime startDate, int pageNumber = 1)
+        
+        public async Task<IActionResult> Weathers(DateTime startDate, string search = "month", int pageNumber = 1)
         {
+            WeatherListModel weatherList = null;
 
-            WeatherListModel weatherList = await _weatherRepository.GetWeatherByMonthWithPagingAsync(startDate, pageNumber);
+            if (search == "year")
+            {
+                weatherList = await _weatherRepository.GetWeatherByYearWithPagingAsync(startDate, pageNumber, search);
+            }
+            else if(search == "month")
+            {
+                weatherList = await _weatherRepository.GetWeatherByMonthWithPagingAsync(startDate, pageNumber, search);
+            }
+            else
+            {
+                RedirectToAction("Error");
+            }
 
             return View(weatherList);
         }

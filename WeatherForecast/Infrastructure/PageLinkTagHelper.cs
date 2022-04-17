@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using System.Collections.Generic;
 using WeatherForecast.ViewModels;
 
 namespace WeatherForecast.Infrastructure {
@@ -32,18 +33,50 @@ namespace WeatherForecast.Infrastructure {
                 TagHelperOutput output) {
             IUrlHelper urlHelper = urlHelperFactory.GetUrlHelper(ViewContext);
             TagBuilder result = new TagBuilder("div");
-            for (int i = 1; i <= PageModel.TotalPages; i++) {
-                TagBuilder tag = new TagBuilder("a");
-                tag.Attributes["href"] = urlHelper.Action(PageAction,
-                   new { startDate = PageModel.SearchDate ,pageNumber = i });
-                if (PageClassesEnabled) {
-                    tag.AddCssClass(PageClass);
-                    tag.AddCssClass(i == PageModel.CurrentPage
-                        ? PageClassSelected : PageClassNormal);
+            if(PageModel.TotalPages > 31)
+            {
+                List<int> pages = new List<int>()
+                {
+                    1, PageModel.CurrentPage - 2, PageModel.CurrentPage - 1, PageModel.CurrentPage, 
+                    PageModel.CurrentPage + 1, PageModel.CurrentPage + 2, PageModel.TotalPages
+                };
+
+                foreach(int i in pages)
+                {
+                    if(i > 0)
+                    {
+                        TagBuilder tag = new TagBuilder("a");
+                        tag.Attributes["href"] = urlHelper.Action(PageAction,
+                           new { startDate = PageModel.SearchDate, pageNumber = i, search = PageModel.PageSearch });
+                        if (PageClassesEnabled)
+                        {
+                            tag.AddCssClass(PageClass);
+                            tag.AddCssClass(i == PageModel.CurrentPage
+                                ? PageClassSelected : PageClassNormal);
+                        }
+                        tag.InnerHtml.Append(i.ToString());
+                        result.InnerHtml.AppendHtml(tag);
+                    }
                 }
-                tag.InnerHtml.Append(i.ToString());
-                result.InnerHtml.AppendHtml(tag);
             }
+            else 
+            {
+                for (int i = 1; i <= PageModel.TotalPages; i++)
+                {
+                    TagBuilder tag = new TagBuilder("a");
+                    tag.Attributes["href"] = urlHelper.Action(PageAction,
+                       new { startDate = PageModel.SearchDate, pageNumber = i, search = PageModel.PageSearch });
+                    if (PageClassesEnabled)
+                    {
+                        tag.AddCssClass(PageClass);
+                        tag.AddCssClass(i == PageModel.CurrentPage
+                            ? PageClassSelected : PageClassNormal);
+                    }
+                    tag.InnerHtml.Append(i.ToString());
+                    result.InnerHtml.AppendHtml(tag);
+                }
+            }
+            
             output.Content.AppendHtml(result.InnerHtml);
         }
     }

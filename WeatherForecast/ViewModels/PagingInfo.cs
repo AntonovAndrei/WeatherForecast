@@ -6,7 +6,9 @@ namespace WeatherForecast.ViewModels
 {
     public class PagingInfo
     {
-        public static int PageSize { get { return 8; } }
+        //years or month
+        public string PageSearch {get; set; }
+        public static int PageSize { get { return 24; } }
         public DateTime SearchDate { get; set; }
         public int TotalItems { get; set; }
         public int ItemsPerPage { get; set; }

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,20 +28,17 @@ namespace WeatherForecast.Domain.Repositories.EntityFramework
             await _context.SaveChangesAsync();
         }
 
-        public async Task<WeatherListModel> GetWeatherByMonthWithPagingAsync(DateTime date, int weatherPage)
+        public async Task<WeatherListModel> GetWeatherByMonthWithPagingAsync(DateTime date, int weatherPage, string search)
         {
             DateTime monthBeginning = new DateTime(date.Year, date.Month, 1);
             DateTime monthEnd = monthBeginning.AddMonths(1).AddMinutes(-1);
 
-            var configuration = new MapperConfiguration(cfg => cfg.CreateProjection<Weather, WeatherDto>());
-
-
-            IEnumerable<WeatherDto> weathers = _context.Weathers
+            IEnumerable<WeatherDto> weathers = _mapper.Map<IEnumerable<Weather>, IEnumerable<WeatherDto>>(await _context.Weathers
                 .Where(d => d.Date >= monthBeginning && d.Date <= monthEnd)
                 .OrderBy(d => d.Date)
                 .Skip((weatherPage - 1) * PagingInfo.PageSize)
                 .Take(PagingInfo.PageSize)
-                .ProjectTo<WeatherDto>(configuration);
+                .ToListAsync());
 
             int itemsCount = _context.Weathers
                 .Where(d => d.Date >= monthBeginning && d.Date <= monthEnd)
@@ -55,26 +52,44 @@ namespace WeatherForecast.Domain.Repositories.EntityFramework
                     CurrentPage = weatherPage,
                     ItemsPerPage = PagingInfo.PageSize,
                     TotalItems = itemsCount,
-                    SearchDate = monthBeginning
+                    SearchDate = monthBeginning,
+                    PageSearch = search
                 }
             };
 
             return weathesrList;
         }
 
-        public async Task<IQueryable<WeatherDto>> GetWeatherByMonthAsync(DateTime date)
+        public async Task<WeatherListModel> GetWeatherByYearWithPagingAsync(DateTime date, int weatherPage, string search)
         {
-            DateTime monthBeginning = new DateTime(date.Year, date.Month, 1);
-            DateTime monthEnd = monthBeginning.AddMonths(1).AddDays(-1);
+            DateTime yearBeginning = new DateTime(date.Year, date.Month, 1);
+            DateTime yearEnd = yearBeginning.AddYears(1).AddMinutes(-1);
 
-            var configuration = new MapperConfiguration(cfg => cfg.CreateProjection<Weather, WeatherDto>());
-            
-            IQueryable<WeatherDto> weathers = _context.Weathers
-                .Where(d => d.Date >= monthBeginning && d.Date <= monthEnd)
+            IEnumerable<WeatherDto> weathers = _mapper.Map<IEnumerable<Weather>, IEnumerable<WeatherDto>>(await _context.Weathers
+                .Where(d => d.Date >= yearBeginning && d.Date <= yearEnd)
                 .OrderBy(d => d.Date)
-                .ProjectTo<WeatherDto>(configuration);
+                .Skip((weatherPage - 1) * PagingInfo.PageSize)
+                .Take(PagingInfo.PageSize)
+                .ToListAsync());
 
-            return weathers;
+            int itemsCount = _context.Weathers
+                .Where(d => d.Date >= yearBeginning && d.Date <= yearEnd)
+                .Count();
+
+            WeatherListModel weathesrList = new WeatherListModel
+            {
+                Weathers = _mapper.Map<IEnumerable<WeatherDto>, IEnumerable<WeatherViewModel>>(weathers),
+                PagingInfo = new PagingInfo
+                {
+                    CurrentPage = weatherPage,
+                    ItemsPerPage = PagingInfo.PageSize,
+                    TotalItems = itemsCount,
+                    SearchDate = yearBeginning,
+                    PageSearch = search
+                }
+            };
+
+            return weathesrList;
         }
     }
 }

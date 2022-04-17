@@ -3,8 +3,6 @@
 @addTagHelper *,WeatherForecast
 @{
     ViewData["Title"] = "Weathers";
-    int counter = 0;
-
 }
 
 
@@ -13,26 +11,32 @@
     @using (Html.BeginForm("Weathers", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-weathers" }))
     {
         <div>
-            <p>Выберите начало месяца:</p>
-            <input type="date" id="startDate" name="startDate" />
+        <p>Выберите первый день даты:</p>
+        <div>
+            <input type="date" id="startDate" name="startDate"/>
+            <select name="search" value="@Model.PagingInfo.PageSearch">
+                <option value="month">Поиск по месяцу</option>
+                <option value="year">Поиск по году</option>
+            </select>
+        </div>
             <input type="submit" value="Найти" class="btn btn-outline-dark" />
         </div>
-        <h1>Прогноз</h1>
-        <table class="table" id="weatherTable">
-            <tr id="weatherHeader">
-                <th>Дата и время</th>
-                <th>Температура воздуха</th>
-                <th>Влажность воздуха</th>
-                <th>Точка росы</th>
-                <th>Атмосферное давление</th>
-                <th>Направление ветра</th>
-                <th>Скорость ветра</th>
-                <th>Облачность</th>
-                <th>Нижняя граница облачности</th>
-                <th>Горизонтальная видимость</th>
-                <th>Погодные явления</th>
-            </tr>
-            @foreach (WeatherViewModel w in Model.Weathers)
+            <h1>Прогноз</h1>
+            <table class="table" id="weatherTable">
+                <tr id="weatherHeader">
+                    <th>Дата и время</th>
+                    <th>Температура воздуха</th>
+                    <th>Влажность воздуха</th>
+                    <th>Точка росы</th>
+                    <th>Атмосферное давление</th>
+                    <th>Направление ветра</th>
+                    <th>Скорость ветра</th>
+                    <th>Облачность</th>
+                    <th>Нижняя граница облачности</th>
+                    <th>Горизонтальная видимость</th>
+                    <th>Погодные явления</th>
+                </tr>
+           @foreach (WeatherViewModel w in Model.Weathers)
             {
                 <tr>
                     <td>@w.Date</td>
@@ -49,8 +53,6 @@
                 </tr>
             }
         </table>
-
-
     }
 </div>
 <div page-model="@Model.PagingInfo" page-action="Weathers" page-classes-enabled="true"
