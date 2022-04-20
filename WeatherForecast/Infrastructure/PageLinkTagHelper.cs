@@ -33,7 +33,7 @@ namespace WeatherForecast.Infrastructure {
                 TagHelperOutput output) {
             IUrlHelper urlHelper = urlHelperFactory.GetUrlHelper(ViewContext);
             TagBuilder result = new TagBuilder("div");
-            if(PageModel.TotalPages > 31)
+            if(PageModel.TotalPages > 20)
             {
                 List<int> pages = new List<int>()
                 {
